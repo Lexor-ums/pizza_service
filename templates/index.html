@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container-fluid">
+    {% for i in range(0, 100000) %}
+    {% set menu  = get_menu(i) %}
+    {% if menu|length == 0 %}
+        {% break %}
+    {% endif %}
+        <div class="row">
+        {% for pizza in menu %}
+            {% if menu.index(pizza) == 0 %}
+                <div class="col col-lg-2 offset-lg-2 item" align="justify">
+                {% else %}
+                <div class="col col-lg-2 " align="justify">
+            {% endif %}
+                <div class="card">
+                    <img class="card-img-top img-fluid"  src="{{ pizza['image'] }}" alt="{{ pizza['alt'] }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ pizza['name'] }}</h5>
+                        <p class="card-text">{{ pizza['ingredients'] }}</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div class="p-2">
+                                {{ pizza['price'] }} &#8381;
+                            </div>
+                            <div class="p-2">
+                                <button type="button" class="btn btn-outline-primary make-buy" id="{{ pizza['id'] }}">В корзину</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}

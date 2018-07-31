@@ -1,0 +1,42 @@
+{% extends "bootstrap/base.html" %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="/static/js/click.js" xmlns="http://www.w3.org/1999/html"></script>
+
+{%- endblock scripts %}
+
+{% block styles %}
+    {{ super() }}
+    <link href="/static/css/localstyle.css" rel="stylesheet">
+{%- endblock styles%}
+
+{% block navbar %}
+    <nav class="nav nav-pills flex-column flex-sm-row">
+        <ul class="nav nav-pills mr-auto">
+            {% for k, v in top_bar.items() %}
+                {% if k != 'Корзина' %}
+                    <li class="nav-item">
+                        <a class="nav-link btn btn-link" role="button" aria-pressed="true" href="{{ v }}">{{ k }}</a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+        {% if top_bar.__contains__('Корзина') %}
+            <li class="nav-item">
+                <ul class="nav nav-pills">
+                    <li class="total-cost">{{ total_cost}}</li> <li> &#8381;</li>
+                </ul>
+                <ul class="nav nav-pills">
+                    <li class="total-items">{{ total_items }}</li> <li>товаров</li>
+                </ul>
+            </li>
+                <li class="nav-item">
+                    <a class="nav-link btn btn-primary" href="{{ top_bar['Корзина'] }}">Корзина</a>
+                </li>
+            </ul>
+        {% endif %}
+    </nav>
+{% endblock %}
+{% block content %}
+{% endblock %}
