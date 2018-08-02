@@ -16,12 +16,18 @@ $(document).ready(function() {
     fieldName = $(this).attr('data-field');
     type      = $(this).attr('data-type');
     var input = $("input[name='"+fieldName+"']");
+    price     = parseInt(input.attr('price'));
     var currentVal = parseInt(input.val());
     if (!isNaN(currentVal)) {
         if(type == 'minus') {
 
             if(currentVal > input.attr('min')) {
                 input.val(currentVal - 1).change();
+                $('.total-cost').html(+$('.total-cost').html() - Number(price));
+                $('.total-items').html(+$('.total-items').html() - 1);
+                $.post('/set_cookies', { total_cost : $('.total-cost').html(),
+                    total_items : $('.total-items').html()})
+                $.post('/remove_from_list', {id : Number(parseInt(input.attr('id')))} )
             }
             if(parseInt(input.val()) == input.attr('min')) {
                 $(this).attr('disabled', true);
@@ -31,6 +37,11 @@ $(document).ready(function() {
 
             if(currentVal < input.attr('max')) {
                 input.val(currentVal + 1).change();
+                $('.total-cost').html(+$('.total-cost').html() + Number(price));
+                $('.total-items').html(+$('.total-items').html() + 1);
+                $.post('/set_cookies', { total_cost : $('.total-cost').html(),
+                    total_items : $('.total-items').html()})
+                $.post('/add_to_list', {id : Number(parseInt(input.attr('id')))} )
             }
             if(parseInt(input.val()) == input.attr('max')) {
                 $(this).attr('disabled', true);
@@ -43,15 +54,16 @@ $(document).ready(function() {
 });
 
 
-$('.input-number').focusin(function(){
+    $('.input-number').focusin(function(){
    $(this).data('oldValue', $(this).val());
 });
 
 
-$('.input-number').change(function() {
+    $('.input-number').change(function() {
 
     minValue =  parseInt($(this).attr('min'));
     maxValue =  parseInt($(this).attr('max'));
+    price = parseInt($(this).attr('price'));
     valueCurrent = parseInt($(this).val());
 
     name = $(this).attr('name');
@@ -67,10 +79,15 @@ $('.input-number').change(function() {
         alert('Sorry, the maximum value was reached');
         $(this).val($(this).data('oldValue'));
     }
+            //     $('.total-cost').html(+$('.total-cost').html() + Number(results.cost));
+            // $('.total-items').html(+$('.total-items').html() + 1);
+            // $.post('/set_cookies', { total_cost : $('.total-cost').html(),
+            //     total_items : $('.total-items').html()})
+            // $.post('/add_to_list', {id : Number(event.target.id)} )
 });
 
 
-$(".input-number").keydown(function (e) {
+    $(".input-number").keydown(function (e) {
         // Allow: backspace, delete, tab, escape, enter and .
         if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 190]) !== -1 ||
              // Allow: Ctrl+A
@@ -86,12 +103,21 @@ $(".input-number").keydown(function (e) {
         }
     });
 
+    $(".no-data").hide();
+
+    $(".confirm-btn").click(function () {
+        if ($("input[id='formName']").val() == '' || $("input[id='formAddress']").val() == '') {
+            $(".no-data").show();
+        }
+        else {
+            $(".no-data").hide();
+            $.post('/set_cookies', { total_cost : 0} );
+            $.post('/set_cookies', { total_items : 0} );
+            $.post('/set_cookies', { name : $("input[id='formName']").val()});
+            $.post('/set_cookies', { address : $("input[id='formAddress']").val()});
+            $.post('/generate_order');
+            $(location).attr('href', '/');
+
+        }
+    });
 });
-
-function add_value(fieldName) {
-    alert(fieldName)
-    var input = $("input[name='"+fieldName+"']");
-    var currentVal = parseInt(input.val());
-    input.val(currentVal + 1).change();
-
-};

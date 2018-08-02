@@ -2,39 +2,36 @@
 
 {% block content %}
     <div class="container-fluid">
-        {% set used = [] %}
+    <div class="row">
+        <div class="col-lg-2 offset-lg-5 item">
+            <h3 align="center">
+                Уточните Ваш заказ:
+            </h3>
+        </div>
+    </div>
+        {% set used = dict() %}
         {% for i in list %}
-            {% if i in used %}
-{#                {% raw %}#}
-                <script>
-                    add_value('quant[{{ i }}]');
-                    $('#quant[{{ i }}]').val('changed Value');
-
-                </script>
-
-{#                    	<script language="JScript">#}
-{#                        fff#}
-{#                            document.getElementById('quant[{{ i }}]').value = 5#}
-{#                        </script>#}
-{#                {%  endraw %}#}
-                {% continue %}
+            {% if used.__contains__(i) %}
+                {% do used.__setitem__(i, used[i] + 1) %}
             {% else %}
-                {%  do used.append(i) %}
+                {%  do used.__setitem__(i, 1) %}
             {% endif %}
+        {% endfor %}
+        {% for k, v in used.items() %}
             <div class="row">
-            {% set pizza=get_pizza_by_id(i) %}
+            {% set pizza=get_pizza_by_id(k) %}
                 <div class="col-lg-1  offset-lg-5 item">{{ pizza['name'] }}
                 </div>
                 <div class="col-lg-1">
                     <div class="input-group">
                         <span class="input-group-btn">
-                            <button type="button" class="btn btn-danger btn-number"  data-type="minus" data-field="quant[{{ i }}]">
+                            <button type="button" class="btn btn-danger btn-number"  data-type="minus" data-field="quant[{{ k }}]">
                                 <span class="min glyphicon glyphicon-minus">-</span>
                             </button>
                         </span>
-                        <input type="text" name="quant[{{ i }}]" class="form-control input-number" value="1" min="1" max="100">
+                        <input type="text" name="quant[{{ k }}]" class="form-control input-number" value="{{ v }}" id ="{{ k }}" min="0" max="100" price="{{ pizza['price'] }}">
                         <span class="input-group-btn">
-                            <button type="button" class="btn btn-success btn-number" data-type="plus" data-field="quant[{{ i }}]">
+                            <button type="button" class="btn btn-success btn-number" data-type="plus" data-field="quant[{{ k }}]">
                                 <span class="glyphicon glyphicon-plus">+</span>
                             </button>
                         </span>
@@ -42,5 +39,21 @@
                 </div>
             </div>
         {% endfor %}
+        <div class="row">
+            <div class="col-lg-2 offset-lg-5 item" style="margin-top: 10px">
+                <ul class="nav nav-pills" align="сenter">
+                    <li> Итого: </li>
+                    <li class="total-cost">{{ total_cost}}</li>
+                    <li> &#8381;</li>
+                </ul>
+            </div>
+        </div>
+            <div class="row">
+            <div class="col-lg-2 offset-lg-5 item" style="margin-top: 10px" align="center">
+                <a class="btn btn-primary" href="/confirm">
+                    Подтвердить и продолжить
+                </a>
+            </div>
+        </div>
     </div>
 {% endblock %}

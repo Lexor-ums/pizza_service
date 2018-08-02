@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="col-lg-2 offset-lg-5">
+        <form>
+            <div class="form-group">
+                <label for="formGroupExampleInput">Ваше имя:</label>
+                <input type="text" class="form-control" id="formName" placeholder="Имя" value="{{ client_name }}">
+            </div>
+            <div class="form-group">
+                <label for="formGroupExampleInput2">Адрес доставки:</label>
+                <input type="text" class="form-control" id="formAddress" placeholder="Адрес" value="{{ client_address }}">
+            </div>
+        </form>
+        <div  class="d-flex justify-content-between flex-column bd-highlight mb-3">
+            <div class="p-2 bd-highlight">
+                <button type="submit" class="btn btn-primary confirm-btn">Подтвердить</button>
+            </div>
+            <div class="p-2 bd-highlight">
+                <label class="no-data">Заполните все поля</label>
+            </div>
+        </div>
+    </div>
+{% endblock %}
