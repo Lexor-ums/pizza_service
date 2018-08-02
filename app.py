@@ -50,7 +50,7 @@ def get_pizza_by_id(pizza_id):
 @app.route('/')
 def home_page():
     global list_of_pizza
-    list_of_pizza = json.load((open(os.path.abspath(os.curdir) + 'static/menu.json')))
+    list_of_pizza = json.load((open(os.path.abspath(os.curdir) + '/static/menu.json')))
     return render_template('index.html', get_menu=lambda row: get_pizza(row))
 
 
@@ -62,7 +62,7 @@ def confirm_page():
 @app.route('/add_to_list', methods=['POST',])
 def add_to_list():
     try:
-        data = json.load((open(os.path.abspath(os.curdir) + 'static/list.json')))
+        data = json.load((open(os.path.abspath(os.curdir) + '/static/list.json')))
     except:
         data = []
     data.append(int(request.values.get('id')))
@@ -73,7 +73,7 @@ def add_to_list():
 @app.route('/admin')
 def page_admin():
     try:
-        data = json.load((open(os.path.abspath(os.curdir) + 'static/order.json')))
+        data = json.load((open(os.path.abspath(os.curdir) + '/static/order.json')))
     except:
         data = []
     return render_template('admin.html', orders=data)
@@ -82,11 +82,11 @@ def page_admin():
 @app.route('/generate_order', methods=['POST',])
 def generate_order():
     try:
-        data = json.load((open(os.path.abspath(os.curdir) + 'static/list.json')))
+        data = json.load((open(os.path.abspath(os.curdir) + '/static/list.json')))
     except:
         data = []
     try:
-        order = json.load((open(os.path.abspath(os.curdir) + 'static/order.json')))
+        order = json.load((open(os.path.abspath(os.curdir) + '/static/order.json')))
     except:
         order = []
     used = dict()
@@ -108,7 +108,7 @@ def generate_order():
                       state='В обработке'
                       ))
     print('order', order)
-    with open(os.path.abspath(os.curdir) + 'static/order.json', 'w') as f:
+    with open(os.path.abspath(os.curdir) + '/static/order.json', 'w') as f:
         json.dump(order, f, indent=2)
     with open('static/list.json', 'w') as f:
         f.close()
@@ -117,11 +117,11 @@ def generate_order():
 @app.route('/remove_from_list', methods=['POST',])
 def remove_from_list():
     try:
-        data = json.load((open(os.path.abspath(os.curdir) + 'static/list.json')))
+        data = json.load((open(os.path.abspath(os.curdir) + '/static/list.json')))
     except:
         data = []
     data.remove(int(request.values.get('id')))
-    with open(os.path.abspath(os.curdir) + 'static/list.json', 'w') as f:
+    with open(os.path.abspath(os.curdir) + '/static/list.json', 'w') as f:
         json.dump(data, f, indent=2)
 
 
@@ -136,7 +136,7 @@ def get_cost():
 
 @app.route('/bracket')
 def bracket_page():
-    data = json.load((open(os.path.abspath(os.curdir) + 'static/list.json')))
+    data = json.load((open(os.path.abspath(os.curdir) + '/static/list.json')))
     return render_template('bracket.html', list=data)
 
 
