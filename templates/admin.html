@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div class="container-fluid">
+    <div class="container-fluid" xmlns="http://www.w3.org/1999/html">
     {% if orders|length == 0 %}
         <div class="row" align="center">
             Заказов не поступало
@@ -17,17 +17,12 @@
                     <ul class="nav nav-pills" align="сenter">
                         <li> Состояние: </li>
                         <li>
-                            <div class="dropdown">
-                                <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {{ order['state'] }}
-                                </a>
-                                <div class="dropdown-menu">
-                                <h6 class="dropdown-item">В обработке</h6>
-                                <h6 class="dropdown-item">Готовится</h6>
-                                <h6 class="dropdown-item">Отправлено</h6>
-                                <h6 class="dropdown-item">Доставлено</h6>
-                            </div>
-                            </div>
+                            <select class="form-control" id="exampleFormControlSelect1">
+                                <option>В обработке</option>
+                                <option>Готовится</option>
+                                <option>Отправлено</option>
+                                <option>Доставлено</option>
+                            </select>
                         </li>
                     </ul>
                 </div>
