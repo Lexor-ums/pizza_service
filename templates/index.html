@@ -10,9 +10,9 @@
         <div class="row">
         {% for pizza in menu %}
             {% if menu.index(pizza) == 0 %}
-                <div class="col col-lg-2 offset-lg-2 item" align="justify">
+                <div class="col col-lg-2 col-md-3  col-sm-2 offset-lg-2 item offset-md-1" align="justify">
                 {% else %}
-                <div class="col col-lg-2 " align="justify">
+                <div class="col col-lg-2 col-md-3  col-sm-2" align="justify">
             {% endif %}
                 <div class="card">
                     <img class="card-img-top img-fluid"  src="{{ pizza['image'] }}" alt="{{ pizza['alt'] }}">

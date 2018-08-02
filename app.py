@@ -136,7 +136,10 @@ def get_cost():
 
 @app.route('/bracket')
 def bracket_page():
-    data = json.load((open(os.path.abspath(os.curdir) + '/static/list.json')))
+    try:
+        data = json.load((open(os.path.abspath(os.curdir) + '/static/list.json')))
+    except:
+        data = []
     return render_template('bracket.html', list=data)
 
 
