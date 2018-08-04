@@ -9,11 +9,10 @@
 {% block styles %}
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <script src="/static/css/localstyle.css" rel="stylesheet"></script>
-
 {%- endblock styles%}
 
 {% block navbar %}
-    <nav class="nav nav-pills flex-column flex-sm-row sticky-top">
+    <nav class="nav nav-pills flex-column flex-sm-row sticky-top navbar-light bg-light">
         <ul class="nav nav-pills mr-auto">
             {% for k, v in top_bar.items() %}
                 {% if k != 'Корзина' %}
@@ -33,11 +32,12 @@
                 </ul>
             </li>
                 <li class="nav-item">
-                    <a class="nav-link btn btn-primary" href="{{ top_bar['Корзина'] }}">Корзина</a>
+                    <a class="nav-link btn btn-primary  m-sm-2" href="{{ top_bar['Корзина'] }}">Корзина</a>
                 </li>
             </ul>
         {% endif %}
     </nav>
 {% endblock %}
 {% block content %}
+
 {% endblock %}

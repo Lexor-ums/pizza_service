@@ -17,20 +17,27 @@ top_bar = {'Меню': '/', 'О нас': '/', 'Меню администрато
 
 @app.context_processor
 def init_navbar():
-    if request.cookies.get('total_cost') is None or request.cookies.get('total_items') is None:
-        return dict(top_bar=top_bar,
-                    total_cost=0,
-                    total_items=0,
-                    client_address='',
-                    client_name='',
-                    get_pizza_by_id=lambda x: get_pizza_by_id(x))
+    glob_dict = dict()
+    print(request.cookies.get('total_cost'))
+    glob_dict['top_bar'] = top_bar
+    glob_dict['get_pizza_by_id'] = lambda x: get_pizza_by_id(x)
+    if request.cookies.get('total_cost') is None or request.cookies.get('total_cost') == 0:
+        glob_dict['total_cost'] = 0
     else:
-        return dict(top_bar=top_bar,
-                    total_cost=request.cookies.get('total_cost'),
-                    total_items=request.cookies.get('total_items'),
-                    client_address=request.cookies.get('address'),
-                    client_name=request.cookies.get('name'),
-                    get_pizza_by_id=lambda x: get_pizza_by_id(x))
+        glob_dict['total_cost'] = request.cookies.get('total_cost')
+    if request.cookies.get('total_items') is None or request.cookies.get('total_items') == 0:
+            glob_dict['total_items'] = 0
+    else:
+        glob_dict['total_items'] = request.cookies.get('total_items')
+    if request.cookies.get('address') is None:
+        glob_dict['client_address'] = ''
+    else:
+        glob_dict['client_address'] = request.cookies.get('address')
+    if request.cookies.get('name') is None:
+        glob_dict['client_name'] = ''
+    else:
+        glob_dict['client_name'] = request.cookies.get('name')
+    return glob_dict
 
 
 def get_pizza(row):

@@ -79,11 +79,6 @@ $(document).ready(function() {
         alert('Sorry, the maximum value was reached');
         $(this).val($(this).data('oldValue'));
     }
-            //     $('.total-cost').html(+$('.total-cost').html() + Number(results.cost));
-            // $('.total-items').html(+$('.total-items').html() + 1);
-            // $.post('/set_cookies', { total_cost : $('.total-cost').html(),
-            //     total_items : $('.total-items').html()})
-            // $.post('/add_to_list', {id : Number(event.target.id)} )
 });
 
 
