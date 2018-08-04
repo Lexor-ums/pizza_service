@@ -10,10 +10,11 @@ bootstrap-dropdown.js"></script>
 {% block styles %}
     {{ super() }}
     <link href="/static/css/localstyle.css" rel="stylesheet">
+
 {%- endblock styles%}
 
 {% block navbar %}
-    <nav class="nav nav-pills flex-column flex-sm-row">
+    <nav class="nav nav-pills flex-column flex-sm-row fixed-top">
         <ul class="nav nav-pills mr-auto">
             {% for k, v in top_bar.items() %}
                 {% if k != 'Корзина' %}

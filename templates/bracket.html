@@ -31,13 +31,15 @@
                     <div class="input-group">
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-danger btn-number"  data-type="minus" data-field="quant[{{ k }}]">
-                                <span class="min glyphicon glyphicon-minus">-</span>
+{#                                <span class="glyphicons glyphicons-minus"></span>#}
+                                -
                             </button>
                         </span>
                         <input type="text" name="quant[{{ k }}]" class="form-control input-number" value="{{ v }}" id ="{{ k }}" min="0" max="100" price="{{ pizza['price'] }}">
                         <span class="input-group-btn">
                             <button type="button" class="btn btn-success btn-number" data-type="plus" data-field="quant[{{ k }}]">
-                                <span class="glyphicon glyphicon-plus">+</span>
+{#                                <span class="glyphicons glyphicons-plus"></span>#}
+                                +
                             </button>
                         </span>
                     </div>
