@@ -7,7 +7,7 @@
     {% if menu|length == 0 %}
         {% break %}
     {% endif %}
-        <div class="row">
+        <div class="row" style="padding-bottom: 20px">
         {% for pizza in menu %}
             {% if menu.index(pizza) == 0 %}
                 <div class="col col-lg-2 col-md-3  col-sm-2 offset-lg-2 item offset-md-1" align="justify">
@@ -16,11 +16,11 @@
             {% endif %}
                 <div class="card">
                     <img class="card-img-top img-fluid"  src="{{ pizza['image'] }}" alt="{{ pizza['alt'] }}">
-                    <div class="card-body">
+                    <div class="card-body card-body-title">
                         <h5 class="card-title">{{ pizza['name'] }}</h5>
                         <p class="card-text">{{ pizza['ingredients'] }}</p>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body align-items-end">
                         <div class="d-flex justify-content-between">
                             <div class="p-2">
                                 {{ pizza['price'] }} &#8381;

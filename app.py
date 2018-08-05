@@ -132,6 +132,21 @@ def remove_from_list():
         json.dump(data, f, indent=2)
 
 
+@app.route('/remove_from_orders', methods=['POST',])
+def remove_from_orders():
+    try:
+        data = json.load((open(os.path.abspath(os.curdir) + '/static/order.json')))
+    except:
+        data = []
+    print((request.values.get('id')))
+    for x in data:
+        if x['id'] == int(request.values.get('id')):
+            data.remove(x)
+    with open(os.path.abspath(os.curdir) + '/static/order.json', 'w') as f:
+        json.dump(data, f, indent=2)
+    
+
+
 @app.route('/cost', methods=['GET'])
 def get_cost():
     pizza_id = request.values.get('data')

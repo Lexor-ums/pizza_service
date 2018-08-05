@@ -115,5 +115,22 @@ $(document).ready(function() {
 
         }
     });
+    $('.row').each(function(){
+        var highestBox = 0;
+        $('.card', this).each(function() {
+            $('.card-body-title', this).each(function () {
+                if ($(this).height() > highestBox) {
+                    highestBox = $(this).height();
+                }
+            });
+        });
+        $('.card-body-title',this).height(highestBox);
+    });
+
+    $('html').on('click','.delete-order', function () {
+        var parent = $("div[id='"+$(this).attr('id')+"']");
+        parent.remove();
+        $.post('/remove_from_orders', {id : Number(parseInt($(this).attr('id')))} )
+    });
 
 });

@@ -14,17 +14,20 @@
                     <p class="card-text"> Что заказано : {{order['items'] }}</p>
                     <p class="card-text"> Имя клиента : {{ order['name'] }}</p>
                     <p class="card-text"> Адрес клинета : {{ order['address'] }}</p>
-                    <ul class="nav nav-pills" align="сenter">
-                        <li> Состояние: </li>
-                        <li>
-                            <select class="form-control" id="exampleFormControlSelect1">
-                                <option>В обработке</option>
-                                <option>Готовится</option>
-                                <option>Отправлено</option>
-                                <option>Доставлено</option>
-                            </select>
-                        </li>
-                    </ul>
+                    <div class="d-flex justify-content-between">
+                        <ul class="nav nav-pills" align="сenter">
+                            <li> Состояние: </li>
+                            <li>
+                                <select class="form-control" id="exampleFormControlSelect1">
+                                    <option>В обработке</option>
+                                    <option>Готовится</option>
+                                    <option>Отправлено</option>
+                                    <option>Доставлено</option>
+                                </select>
+                            </li>
+                        </ul>
+                        <button class="btn btn-light delete-order" id="{{ order['id'] }}">Удалить</button>
+                    </div>
                 </div>
             </div>
         {% endfor %}
