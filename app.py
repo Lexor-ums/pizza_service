@@ -4,6 +4,10 @@ from datetime import datetime
 from flask import Flask, render_template, json, jsonify, request, make_response
 from flask_bootstrap import Bootstrap
 
+from sqlalchemy import Integer, Text
+import models
+from models import Table
+
 list_of_pizza = []
 
 app = Flask(__name__)
@@ -12,13 +16,27 @@ Bootstrap(app)
 
 objects_in_line = 4
 
-top_bar = {'Меню': '/', 'О нас': '/', 'Меню администратора': '/admin', 'Корзина': '/bracket'}
+top_bar = {'Меню': '/', 'О нас': '/about', 'Меню администратора': '/admin', 'Корзина': '/bracket'}
+
+menu_tab = Table("table_menu", models.engine)
+menu_tab.add_columns(('id', Integer),
+                    ('name', Text),
+                    ('alt', Text),
+                    ('image', Text),
+                    ('ingredients', Text),
+                    ('price', Integer))
+order_tab = Table("table_order", models.engine)
+order_tab.add_columns(('id', Integer),
+                      ('items', Text),
+                      ('address', Text),
+                      ('name', Text),
+                      ('state', Text),
+                      ('time', Text))
 
 
 @app.context_processor
 def init_navbar():
     glob_dict = dict()
-    print(request.cookies.get('total_cost'))
     glob_dict['top_bar'] = top_bar
     glob_dict['get_pizza_by_id'] = lambda x: get_pizza_by_id(x)
     if request.cookies.get('total_cost') is None or request.cookies.get('total_cost') == 0:
@@ -57,8 +75,15 @@ def get_pizza_by_id(pizza_id):
 @app.route('/')
 def home_page():
     global list_of_pizza
-    list_of_pizza = json.load((open(os.path.abspath(os.curdir) + '/static/menu.json')))
+    res = menu_tab.do_select()
+    list_of_pizza = [dict(r) for r in res]
     return render_template('index.html', get_menu=lambda row: get_pizza(row))
+
+
+@app.route('/about')
+def home_about():
+    global list_of_pizza
+    return render_template('about.html')
 
 
 @app.route('/confirm')
@@ -66,36 +91,33 @@ def confirm_page():
     return render_template('confirm.html')
 
 
-@app.route('/add_to_list', methods=['POST',])
+@app.route('/add_to_list', methods=['POST', ])
 def add_to_list():
-    try:
-        data = json.load((open(os.path.abspath(os.curdir) + '/static/list.json')))
-    except:
+    cookie = request.cookies.get('bracket')
+    if cookie is None or cookie == '':
         data = []
+    else:
+        data = json.loads(cookie)
     data.append(int(request.values.get('id')))
-    with open('static/list.json', 'w') as f:
-        json.dump(data, f, indent=2)
+    res = make_response('')
+    res.set_cookie('bracket', json.dumps(data, indent=2))
+    print('add to list ' + json.dumps(data, indent=2))
+    return res
 
 
 @app.route('/admin')
 def page_admin():
-    try:
-        data = json.load((open(os.path.abspath(os.curdir) + '/static/order.json')))
-    except:
-        data = []
-    return render_template('admin.html', orders=data)
+    data = order_tab.do_select()
+    return render_template('admin.html', orders=[dict(r) for r in data])
 
 
-@app.route('/generate_order', methods=['POST',])
+@app.route('/generate_order', methods=['POST', ])
 def generate_order():
-    try:
-        data = json.load((open(os.path.abspath(os.curdir) + '/static/list.json')))
-    except:
+    cookie = request.cookies.get('bracket')
+    if cookie is None or cookie == '':
         data = []
-    try:
-        order = json.load((open(os.path.abspath(os.curdir) + '/static/order.json')))
-    except:
-        order = []
+    else:
+        data = json.loads(cookie)
     used = dict()
     for i in data:
         if used.__contains__(i):
@@ -106,45 +128,33 @@ def generate_order():
     for k, v in used.items():
         items += '{0}({1}),'.format(get_pizza_by_id(k)['name'], str(v))
     items = items[:-1]
-    print('items ', items)
-    order.append(dict(id=len(order) + 1,
-                      items=items,
-                      address=request.cookies.get('address'),
-                      name=request.cookies.get('name'),
-                      time=datetime.strftime(datetime.now(), "%Y.%m.%d %H:%M:%S"),
-                      state='В обработке'
-                      ))
-    print('order', order)
-    with open(os.path.abspath(os.curdir) + '/static/order.json', 'w') as f:
-        json.dump(order, f, indent=2)
-    with open('static/list.json', 'w') as f:
-        f.close()
+    order_tab.do_insert(items=items,
+                        address=request.cookies.get('address'),
+                        name=request.cookies.get('name'),
+                        time=datetime.strftime(datetime.now(), "%Y.%m.%d %H:%M:%S"),
+                        state='В обработке'
+                        )
+    res = make_response('')
+    res.set_cookie('bracket', '')
+    return res
 
 
-@app.route('/remove_from_list', methods=['POST',])
+@app.route('/remove_from_list', methods=['POST', ])
 def remove_from_list():
-    try:
-        data = json.load((open(os.path.abspath(os.curdir) + '/static/list.json')))
-    except:
+    cookie = request.cookies.get('bracket')
+    if cookie is None or cookie == '':
         data = []
+    else:
+        data = json.loads(cookie)
     data.remove(int(request.values.get('id')))
-    with open(os.path.abspath(os.curdir) + '/static/list.json', 'w') as f:
-        json.dump(data, f, indent=2)
+    res = make_response('')
+    res.set_cookie('bracket', json.dumps(data, indent=2))
+    return res
 
 
-@app.route('/remove_from_orders', methods=['POST',])
+@app.route('/remove_from_orders', methods=['POST', ])
 def remove_from_orders():
-    try:
-        data = json.load((open(os.path.abspath(os.curdir) + '/static/order.json')))
-    except:
-        data = []
-    print((request.values.get('id')))
-    for x in data:
-        if x['id'] == int(request.values.get('id')):
-            data.remove(x)
-    with open(os.path.abspath(os.curdir) + '/static/order.json', 'w') as f:
-        json.dump(data, f, indent=2)
-    
+    order_tab.do_delete(int(request.values.get('id')))
 
 
 @app.route('/cost', methods=['GET'])
@@ -158,10 +168,11 @@ def get_cost():
 
 @app.route('/bracket')
 def bracket_page():
-    try:
-        data = json.load((open(os.path.abspath(os.curdir) + '/static/list.json')))
-    except:
+    cookie = request.cookies.get('bracket')
+    if cookie is None or cookie == '':
         data = []
+    else:
+        data = json.loads(cookie)
     return render_template('bracket.html', list=data)
 
 
