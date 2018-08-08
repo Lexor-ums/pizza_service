@@ -3,20 +3,16 @@ from sqlalchemy import Column
 from sqlalchemy_utils import database_exists, create_database
 
 POSTGRES = {
-    'user': 'lexor',
-    'pw': '',
-    'db': 'it_place_db',
-    'host': 'localhost',
-    'port': '5432',
+    'user': 'lexxor',
+    'pw': 'lexorsdatabase',
+    'db': 'lexxor$it_place_db',
+    'host': 'lexxor.mysql.pythonanywhere-services.com',
+    'port': '3306',
 }
-
-connection_string = 'postgresql://%(user)s:\
-%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
+connection_string = 'mysql://%(user)s:\
+%(pw)s@%(host)s:%(port)s/%(db)s?charset=utf8' % POSTGRES
 db = sqlalchemy.create_engine(connection_string)
-if not database_exists(db.url):
-    create_database(db.url)
 engine = db.connect()
-
 
 class Table:
     def __init__(self, table_name, db_engine):

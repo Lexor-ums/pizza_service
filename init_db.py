@@ -2,20 +2,42 @@ import json
 import sys
 
 import sqlalchemy
-from postgresql.python import os
-from sqlalchemy import Column, Integer, Text
+import os
+from sqlalchemy import Column, Integer, Text, MetaData, Table
+from sqlalchemy_utils import database_exists, create_database
 
 POSTGRES = {
-    'user': 'lexor',
-    'pw': '',
-    'db': 'it_place_db',
-    'host': 'localhost',
-    'port': '5432',
+    'user': 'lexxor',
+    'pw': 'lexorsdatabase',
+    'db': 'lexxor$it_place_db',
+    'host': 'lexxor.mysql.pythonanywhere-services.com',
+    'port': '3306',
 }
-connection_string = 'postgresql://%(user)s:\
-%(pw)s@%(host)s:%(port)s/%(db)s' % POSTGRES
+connection_string = 'mysql://%(user)s:\
+%(pw)s@%(host)s:%(port)s/%(db)s?charset=utf8' % POSTGRES
 db = sqlalchemy.create_engine(connection_string)
-engine = db.connect()
+if not database_exists(db.url):
+    create_database(db.url)
+    engine = db.connect()
+    metadata = MetaData()
+    table_menu = Table('table_menu', metadata,
+                    Column('id', Integer, primary_key=True),
+                    Column('name', Text),
+                    Column('alt', Text),
+                    Column('image', Text),
+                    Column('ingredients', Text),
+                    Column('price', Integer))
+    table_orders = Table('table_order', metadata,
+                       Column('id', Integer, primary_key=True, autoincrement=True),
+                       Column('items', Text),
+                       Column('name', Text),
+                       Column('address', Text),
+                       Column('state', Text),
+                       Column('time', Text))
+    metadata.create_all(engine)
+else:
+    engine = db.connect()
+
 j_table = sqlalchemy.table(
         "table_menu", Column('id', Integer),
         Column('name', Text),
@@ -47,4 +69,4 @@ if __name__ == '__main__':
     if len(sys.argv) == 2:
         get_json(sys.argv[1])
     else:
-        get_json('static/menu.json')
+        get_json('/static/menu.json')
