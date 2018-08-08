@@ -6,7 +6,7 @@ import os
 from sqlalchemy import Column, Integer, Text, MetaData, Table
 from sqlalchemy_utils import database_exists, create_database
 
-POSTGRES = {
+DB_CONNECT = {
     'user': 'lexxor',
     'pw': 'lexorsdatabase',
     'db': 'lexxor$it_place_db',
@@ -14,26 +14,29 @@ POSTGRES = {
     'port': '3306',
 }
 connection_string = 'mysql://%(user)s:\
-%(pw)s@%(host)s:%(port)s/%(db)s?charset=utf8' % POSTGRES
+%(pw)s@%(host)s:%(port)s/%(db)s?charset=utf8' % DB_CONNECT
 db = sqlalchemy.create_engine(connection_string)
+"""
+    Создание БД и таблиц
+"""
 if not database_exists(db.url):
     create_database(db.url)
     engine = db.connect()
     metadata = MetaData()
     table_menu = Table('table_menu', metadata,
-                    Column('id', Integer, primary_key=True),
-                    Column('name', Text),
-                    Column('alt', Text),
-                    Column('image', Text),
-                    Column('ingredients', Text),
-                    Column('price', Integer))
-    table_orders = Table('table_order', metadata,
-                       Column('id', Integer, primary_key=True, autoincrement=True),
-                       Column('items', Text),
+                       Column('id', Integer, primary_key=True),
                        Column('name', Text),
-                       Column('address', Text),
-                       Column('state', Text),
-                       Column('time', Text))
+                       Column('alt', Text),
+                       Column('image', Text),
+                       Column('ingredients', Text),
+                       Column('price', Integer))
+    table_orders = Table('table_order', metadata,
+                         Column('id', Integer, primary_key=True, autoincrement=True),
+                         Column('items', Text),
+                         Column('name', Text),
+                         Column('address', Text),
+                         Column('state', Text),
+                         Column('time', Text))
     metadata.create_all(engine)
 else:
     engine = db.connect()
@@ -48,6 +51,10 @@ j_table = sqlalchemy.table(
 
 
 def get_json(file_name):
+    """
+    Фукция чтения json описывающено меню и запись в БД
+    :param file_name:
+    """
     try:
         data = json.load((open(os.path.abspath(os.curdir) + file_name)))
     except FileExistsError as err:
@@ -65,6 +72,9 @@ def get_json(file_name):
         engine.execute(statement)
 
 
+"""
+    главная функция. В качестве аргемента может быть передан путь в json с описанием товаров 
+"""
 if __name__ == '__main__':
     if len(sys.argv) == 2:
         get_json(sys.argv[1])

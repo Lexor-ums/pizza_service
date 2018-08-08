@@ -36,6 +36,10 @@ order_tab.add_columns(('id', Integer),
 
 @app.context_processor
 def init_navbar():
+    """
+    Функция генерации контекста шаблона
+    :return: словарь контекстных переменных
+    """
     glob_dict = dict()
     glob_dict['top_bar'] = top_bar
     glob_dict['get_pizza_by_id'] = lambda x: get_pizza_by_id(x)
@@ -59,6 +63,11 @@ def init_navbar():
 
 
 def get_pizza(row):
+    """
+    Функция, возвращающая следующие 4 наименования товара для формирования шаблона
+    :param row: номер строки следующей строки в таблице товаров
+    :return: лист товаров
+    """
     if row * objects_in_line + objects_in_line > len(list_of_pizza):
         return list_of_pizza[row * objects_in_line:]
     else:
@@ -66,6 +75,11 @@ def get_pizza(row):
 
 
 def get_pizza_by_id(pizza_id):
+    """
+    функция, возвращающая оаписание това по его id
+    :param pizza_id: id товара
+    :return: формуляр товара
+    """
     for pizza in list_of_pizza:
         if int(pizza['id']) == pizza_id:
             return pizza
@@ -74,6 +88,10 @@ def get_pizza_by_id(pizza_id):
 
 @app.route('/')
 def home_page():
+    """
+    Фукция генерации шаблона базовой страницы
+    :return: сгенерированный шаблон
+    """
     global list_of_pizza
     res = menu_tab.do_select()
     list_of_pizza = [dict(r) for r in res]
@@ -82,17 +100,29 @@ def home_page():
 
 @app.route('/about')
 def home_about():
+    """
+    Функция герерации шаблона спаравочной страницы
+    :return: сгенерированный шаблон
+    """
     global list_of_pizza
     return render_template('about.html')
 
 
 @app.route('/confirm')
 def confirm_page():
+    """
+    Функция герепации шаблона стриницы заполнения формы данных заказчика
+    :return: сгенерированный шаблон
+    """
     return render_template('confirm.html')
 
 
 @app.route('/add_to_list', methods=['POST', ])
 def add_to_list():
+    """
+    функция обработки запроса на добавление нового товара в корзину
+    :return: response
+    """
     cookie = request.cookies.get('bracket')
     if cookie is None or cookie == '':
         data = []
@@ -107,12 +137,20 @@ def add_to_list():
 
 @app.route('/admin')
 def page_admin():
+    """
+    Функция герепации шаблона стриницы администрирования заказов
+    :return: сгенерированный шаблон
+    """
     data = order_tab.do_select()
     return render_template('admin.html', orders=[dict(r) for r in data])
 
 
 @app.route('/generate_order', methods=['POST', ])
 def generate_order():
+    """
+    Функция обработки запроса на формирование запись в БД заказа
+    :return: response
+    """
     cookie = request.cookies.get('bracket')
     if cookie is None or cookie == '':
         data = []
@@ -141,6 +179,10 @@ def generate_order():
 
 @app.route('/remove_from_list', methods=['POST', ])
 def remove_from_list():
+    """
+    Функция обработки запроса на удаление товара из корзины
+    :return: response
+    """
     cookie = request.cookies.get('bracket')
     if cookie is None or cookie == '':
         data = []
@@ -154,11 +196,18 @@ def remove_from_list():
 
 @app.route('/remove_from_orders', methods=['POST', ])
 def remove_from_orders():
+    """
+    Функция удаления заказа из БД
+    """
     order_tab.do_delete(int(request.values.get('id')))
 
 
 @app.route('/cost', methods=['GET'])
 def get_cost():
+    """
+    Функция запрашивает стоимость товара
+    :return:  Json-объект id товара - стоимость
+    """
     pizza_id = request.values.get('data')
     for pizza in list_of_pizza:
         if pizza['id'] == int(pizza_id):
@@ -168,6 +217,10 @@ def get_cost():
 
 @app.route('/bracket')
 def bracket_page():
+    """
+    Функция генерации шаблона старницы корзины
+    :return: сгенерированный шаблон
+    """
     cookie = request.cookies.get('bracket')
     if cookie is None or cookie == '':
         data = []
@@ -178,6 +231,10 @@ def bracket_page():
 
 @app.route('/set_cookies', methods=['POST'])
 def set_cookies():
+    """
+    Функция записи cookies
+    :return: cookies
+    """
     res = make_response('')
     for k, v in request.values.items():
         res.set_cookie(k, v)
